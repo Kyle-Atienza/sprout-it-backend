@@ -6,7 +6,7 @@ const {
   setHarvest,
   updateHarvest,
   deleteHarvest,
-} = require("../contollers/harvestController");
+} = require("../controllers/harvestController");
 
 router.get("/", getHarvests);
 router.post("/", setHarvest);

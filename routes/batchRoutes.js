@@ -6,7 +6,7 @@ const {
   setBatch,
   updateBatch,
   deleteBatch,
-} = require("../contollers/batchController");
+} = require("../controllers/batchController");
 
 router.get("/", getBatches);
 router.post("/", setBatch);
