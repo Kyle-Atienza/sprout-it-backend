@@ -4,15 +4,23 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      default: [true, "Please add a name"],
+      require: [true, "Please add a name"],
     },
     email: {
       type: String,
-      default: [true, "Please add a email"],
+      require: [true, "Please add a email"],
     },
     password: {
       type: String,
-      default: [true, "Please add a password"],
+      require: [true, "Please add a password"],
+    },
+    farm: {
+      type: String,
+      require: [true, "Please add a farm"],
+    },
+    isOwner: {
+      type: Boolean,
+      require: [true, "Please add a Status"],
     },
   },
   {

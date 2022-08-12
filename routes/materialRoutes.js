@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const { protect } = require("../middleware/authMiddleware");
+
 const {
   getMaterials,
   setMaterial,
@@ -8,9 +10,9 @@ const {
   deleteMaterial,
 } = require("../controllers/materialController");
 
-router.get("/", getMaterials);
-router.post("/", setMaterial);
-router.put("/:id", updateMaterial);
-router.delete("/:id", deleteMaterial);
+router.get("/", protect, getMaterials);
+router.post("/", protect, setMaterial);
+router.put("/:id", protect, updateMaterial);
+router.delete("/:id", protect, deleteMaterial);
 
 module.exports = router;

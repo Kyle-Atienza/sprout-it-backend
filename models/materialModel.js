@@ -4,11 +4,11 @@ const materialSchema = mongoose.Schema(
   {
     material: {
       type: String,
-      default: [true, "Please add material"],
+      require: [true, "Please add material"],
     },
     weight: {
       type: Number,
-      default: [true, "Please add weight"],
+      require: [true, "Please add weight"],
     },
   },
   {

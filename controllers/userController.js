@@ -7,8 +7,8 @@ const { json } = require("express");
 
 const registerUser = asyncHandler(async (req, res) => {
   //check fields
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, email, password, farm, isOwner } = req.body;
+  if (!name || !email || !password || !farm || !isOwner) {
     res.status(400);
     throw new Error("Please add necessary details");
   }
@@ -27,6 +27,8 @@ const registerUser = asyncHandler(async (req, res) => {
   //create user
   const user = await User.create({
     name: name,
+    farm: farm,
+    isOwner: isOwner,
     email: email,
     password: hashedPassword,
   });
@@ -34,6 +36,8 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(200).json({
       _id: user.id,
       name: user.name,
+      isOwner: isOwner,
+      farm: farm,
       email: user.email,
       token: generateToken(user._id),
     });
