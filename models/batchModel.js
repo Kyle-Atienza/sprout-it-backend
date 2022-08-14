@@ -8,7 +8,12 @@ const batchSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    name: String,
     active: Boolean,
+    activePhase: {
+      type: String,
+      default: "composting",
+    },
     materials: [
       {
         type: mongoose.Schema.Types.ObjectId,

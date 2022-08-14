@@ -13,10 +13,19 @@ const getBatches = asyncHandler(async (req, res) => {
 });
 
 const setBatch = asyncHandler(async (req, res) => {
+  const { activePhase, active } = req.body;
+
+  const batches = await Batch.find({
+    owner: req.user.id,
+    farm: req.user.farm,
+  });
+
   const batch = await Batch.create({
     owner: req.user.id,
     farm: req.user.farm,
-    active: true,
+    active: active,
+    activePhase: activePhase,
+    name: batches.length + 1,
     composting: {
       moisture: 0,
       period: null,
@@ -53,8 +62,6 @@ const updateBatch = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Role not able to update");
   }
-
-  console.log(req.user);
 
   if (!batch) {
     res.status(400);
