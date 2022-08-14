@@ -3,9 +3,18 @@ const mongoose = require("mongoose");
 //TODO: name of batch
 const batchSchema = mongoose.Schema(
   {
-    owner: mongoose.Schema.Types.ObjectId,
+    farm: String,
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     active: Boolean,
-    materials: [mongoose.Schema.Types.ObjectId],
+    materials: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Material",
+      },
+    ],
     composting: {
       moisture: Number,
       period: Date, //finish date of composting
@@ -28,20 +37,19 @@ const batchSchema = mongoose.Schema(
     fruiting: {
       waiting: Date,
       defects: Number,
-      tasks: [
-        {
-          name: {
-            type: String,
-            required: [true, "Please add name"],
-          },
-          frequency: {
-            type: Number,
-            require: [true, "Please add frequency"],
-          },
-        },
-      ],
     },
-    harvests: [mongoose.Schema.Types.ObjectId],
+    tasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
+    ],
+    harvests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Harvest",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -9,6 +9,10 @@ const harvestsSchema = mongoose.Schema({
     type: Number,
     require: [true, "Please add Weight"],
   },
+  batch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Batch",
+  },
 });
 
 module.exports = mongoose.model("Harvest", harvestsSchema);
