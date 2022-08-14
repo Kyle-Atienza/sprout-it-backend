@@ -14,13 +14,9 @@ const userSchema = mongoose.Schema(
       type: String,
       require: [true, "Please add a password"],
     },
-    farm: {
+    role: {
       type: String,
-      require: [true, "Please add a farm"],
-    },
-    isOwner: {
-      type: Boolean,
-      require: [true, "Please add a Status"],
+      default: "worker",
     },
   },
   {

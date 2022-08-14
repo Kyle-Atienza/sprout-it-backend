@@ -3,12 +3,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/userModel");
-const { json } = require("express");
 
+//@desc       create users
+//@route      api/users/register
+//@req        name: required, email: required, password: required
 const registerUser = asyncHandler(async (req, res) => {
   //check fields
-  const { name, email, password, farm, isOwner } = req.body;
-  if (!name || !email || !password || !farm || !isOwner) {
+  const { name, email, password, role } = req.body;
+  if (!name || !email || !password) {
     res.status(400);
     throw new Error("Please add necessary details");
   }
@@ -27,18 +29,16 @@ const registerUser = asyncHandler(async (req, res) => {
   //create user
   const user = await User.create({
     name: name,
-    farm: farm,
-    isOwner: isOwner,
     email: email,
+    role: role,
     password: hashedPassword,
   });
   if (user) {
     res.status(200).json({
       _id: user.id,
       name: user.name,
-      isOwner: isOwner,
-      farm: farm,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id),
     });
   } else {
@@ -47,6 +47,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc       create users
+//@route      api/users/login
+//@req        email: required, password: required
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -57,6 +60,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id),
     });
   } else {
@@ -65,6 +69,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+// get user details
 const getUser = asyncHandler(async (req, res) => {
   if (req.user) {
     res.status(200).json({
@@ -75,6 +80,76 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
+//@desc       generate invite token
+//@route      api/users/invite
+//@req        name: requireds, email: required, role: optional
+const inviteUser = asyncHandler(async (req, res) => {
+  const { name, email, role } = req.body;
+  if (!name || !email) {
+    res.status(400);
+    throw new Error("Please add necessary details");
+  }
+
+  const userExists = await User.findOne({ email: email });
+  if (userExists) {
+    res.status(400);
+    throw new Error("User Already Exsists");
+  }
+
+  const invitedUser = {
+    name: name,
+    email: email,
+    role: role ? role : "worker",
+  };
+
+  res.status(200).json({
+    inviteToken: generateInviteToken(invitedUser),
+  });
+});
+
+//@desc       register user with invite token
+//@route      api/users/register/:invite
+//@req        name: optional, email: optional, password: required
+const registerInvitedUser = asyncHandler(async (req, res) => {
+  // check if invite token is verified with secret
+  const decodedUserDetails = jwt.verify(
+    req.params.invite,
+    process.env.JWT_SECRET
+  );
+
+  // check if account exists
+  const userExists = await User.findOne({ email: decodedUserDetails.email });
+  if (userExists) {
+    res.status(400);
+    throw new Error("User Already Exsists");
+  }
+
+  // hash password
+  const hashedPassword = await hashPassword(req.body.password, 10);
+
+  //create user
+  const user = await User.create({
+    name: decodedUserDetails.name,
+    role: decodedUserDetails.role,
+    email: decodedUserDetails.email,
+    password: hashedPassword,
+  });
+  if (user) {
+    res.status(200).json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid Credentials");
+  }
+
+  res.status(200).json(user);
+});
+
 //generate token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -82,8 +157,30 @@ const generateToken = (id) => {
   });
 };
 
+//generate invite token
+const generateInviteToken = (invitedUser) => {
+  return jwt.sign(
+    {
+      name: invitedUser.name,
+      email: invitedUser.email,
+      role: invitedUser.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "30d",
+    }
+  );
+};
+
+const hashPassword = async (password, saltValue) => {
+  const salt = await bcrypt.genSalt(saltValue);
+  return await bcrypt.hash(password, salt);
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUser,
+  inviteUser,
+  registerInvitedUser,
 };

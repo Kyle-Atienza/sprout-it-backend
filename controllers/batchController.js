@@ -49,6 +49,13 @@ const updateBatch = asyncHandler(async (req, res) => {
   //find batch
   const batch = await Batch.findById(req.params.id);
 
+  if (req.user.role == "worker") {
+    res.status(400);
+    throw new Error("Role not able to update");
+  }
+
+  console.log(req.user);
+
   if (!batch) {
     res.status(400);
     throw new Error("Batch not found");
