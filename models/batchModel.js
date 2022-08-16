@@ -55,6 +55,7 @@ const batchSchema = mongoose.Schema(
         ref: "Harvest",
       },
     ],
+    finishedAt: Date,
   },
   {
     timestamps: true,
