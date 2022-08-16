@@ -4,10 +4,7 @@ const Batch = require("../models/batchModel");
 const getBatches = asyncHandler(async (req, res) => {
   // TODO: add authentication
 
-  const batches = await Batch.find({
-    owner: req.user.id,
-    farm: req.user.farm,
-  }).populate("tasks materials harvests");
+  const batches = await Batch.find().populate("tasks materials harvests");
 
   res.status(200).json(batches);
 });
