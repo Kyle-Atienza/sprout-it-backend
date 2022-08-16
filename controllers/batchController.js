@@ -4,15 +4,25 @@ const Batch = require("../models/batchModel");
 const getBatches = asyncHandler(async (req, res) => {
   // TODO: add authentication
 
-  const batches = await Batch.find({ owner: req.user.id });
+  const batches = await Batch.find().populate("tasks materials harvests");
 
   res.status(200).json(batches);
 });
 
 const setBatch = asyncHandler(async (req, res) => {
+  const { activePhase, active } = req.body;
+
+  const batches = await Batch.find({
+    owner: req.user.id,
+    farm: req.user.farm,
+  });
+
   const batch = await Batch.create({
     owner: req.user.id,
-    active: true,
+    farm: req.user.farm,
+    active: active,
+    activePhase: activePhase,
+    name: batches.length + 1,
     composting: {
       moisture: 0,
       period: null,
@@ -44,6 +54,11 @@ const setBatch = asyncHandler(async (req, res) => {
 const updateBatch = asyncHandler(async (req, res) => {
   //find batch
   const batch = await Batch.findById(req.params.id);
+
+  if (req.user.role == "worker") {
+    res.status(400);
+    throw new Error("Role not able to update");
+  }
 
   if (!batch) {
     res.status(400);

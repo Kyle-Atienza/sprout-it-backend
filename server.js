@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const cors = require("cors");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
@@ -11,6 +12,12 @@ connectDB();
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -19,6 +26,7 @@ app.use("/api/harvest", require("./routes/harvestRoutes"));
 app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/material", require("./routes/materialRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/farm", require("./routes/farmRoutes"));
 
 app.use(errorHandler);
 

@@ -1,18 +1,55 @@
 const asyncHandler = require("express-async-handler");
 
 const Harvest = require("../models/harvestModel");
+const Batch = require("../models/batchModel");
 
 const getHarvests = asyncHandler(async (req, res) => {
-  const harvests = await Harvest.find();
+  const { batchId } = req.body;
 
-  res.status(200).json(harvests);
+  // find batch by supplied batch id
+  const batch = await Batch.findById(batchId).populate("harvests");
+  // check if batch is returned
+  if (!batch) {
+    res.status(400);
+    throw new Error("Batch not found");
+  }
+  // verify if creator owns the batch
+  if (batch.owner.toString() !== req.user.id) {
+    res.status(400);
+    throw new Error("Unable to modify batch");
+  }
+
+  res.status(200).json(batch.harvests);
 });
 
 const setHarvest = asyncHandler(async (req, res) => {
+  const { batchId } = req.body;
+
+  // get batch from body
+  const batch = await Batch.findById(batchId).populate("tasks");
+  // check if batch is returned
+  if (!batch) {
+    res.status(400);
+    throw new Error("Batch not found");
+  }
+  // verify if creator owns the batch
+  if (batch.owner.toString() !== req.user.id) {
+    res.status(400);
+    throw new Error("Unable to modify batch");
+  }
+
   const harvest = await Harvest.create({
     date: new Date(new Date().toDateString()),
     weight: req.body.weight,
   });
+
+  await Batch.findByIdAndUpdate(
+    batch.id,
+    {
+      harvests: [...batch.harvests, harvest.id],
+    },
+    { new: true }
+  );
 
   res.status(200).json(harvest);
 });
