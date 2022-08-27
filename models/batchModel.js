@@ -14,10 +14,22 @@ const batchSchema = mongoose.Schema(
       type: String,
       default: "composting",
     },
+    /*  materials: {
+      kusot: Number,
+      dayami: Number,
+      apog: Number,
+      darakPino: Number,
+      darakMixed: Number,
+      asukal: Number,
+      tubig: Number,
+    }, */
     materials: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Material",
+        material: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Material",
+        },
+        weight: Number,
       },
     ],
     composting: {

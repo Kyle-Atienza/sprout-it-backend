@@ -4,7 +4,7 @@ const Material = require("../models/materialModel");
 const Batch = require("../models/batchModel");
 
 const getMaterials = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  /* const { batchId } = req.body;
 
   // find batch by supplied batch id
   const batch = await Batch.findById(batchId).populate("materials");
@@ -17,42 +17,28 @@ const getMaterials = asyncHandler(async (req, res) => {
   if (batch.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("Unable to modify batch");
-  }
+  } */
+
+  const materials = await Material.find();
 
   // const materials = await Material.find();
 
-  res.status(200).json(batch.materials);
+  res.status(200).json(materials);
 });
 
 const setMaterial = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  const { name, unit } = req.body;
 
-  // find batch by supplied batch id
-  const batch = await Batch.findById(batchId);
-  // check if batch is returned
-  if (!batch) {
+  if (!name || !unit) {
     res.status(400);
-    throw new Error("Batch not found");
-  }
-  // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
+    throw new Error("Please provide necessary details");
   }
 
   const material = await Material.create({
-    material: req.body.material,
-    weight: req.body.weight,
+    name: req.body.name,
+    altName: req.body.altName,
+    unit: req.body.unit,
   });
-
-  await Batch.findByIdAndUpdate(
-    batch.id,
-    {
-      materials: [...batch.materials, material.id],
-    },
-    { new: true }
-  );
-
   res.status(200).json(material);
 });
 

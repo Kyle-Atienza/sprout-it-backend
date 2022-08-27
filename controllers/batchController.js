@@ -4,25 +4,31 @@ const Batch = require("../models/batchModel");
 const getBatches = asyncHandler(async (req, res) => {
   // TODO: add authentication
 
-  const batches = await Batch.find().populate("tasks materials harvests");
+  // const batches = await Batch.find().populate("tasks materials harvests");
+  const batches = await Batch.find().populate({
+    path: "tasks materials.material",
+  });
 
   res.status(200).json(batches);
 });
 
 const setBatch = asyncHandler(async (req, res) => {
-  const { activePhase, active } = req.body;
+  const { activePhase, active, materials } = req.body;
 
-  const batches = await Batch.find({
-    owner: req.user.id,
-    farm: req.user.farm,
-  });
+  if (!materials) {
+    res.status(200);
+    throw new Error("Materials Required");
+  }
+
+  const batches = await Batch.find({});
 
   const batch = await Batch.create({
     owner: req.user.id,
     farm: req.user.farm,
-    active: active,
-    activePhase: activePhase,
+    active: true,
+    activePhase: "composting",
     name: batches.length + 1,
+    materials: materials,
     composting: {
       moisture: 0,
       period: null,
