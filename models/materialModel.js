@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const materialSchema = mongoose.Schema(
   {
-    material: {
+    name: {
       type: String,
       require: [true, "Please add material"],
     },
-    weight: {
-      type: Number,
-      require: [true, "Please add weight"],
+    altName: String,
+    unit: {
+      type: String,
+      require: [true, "Please add unit"],
     },
   },
   {
