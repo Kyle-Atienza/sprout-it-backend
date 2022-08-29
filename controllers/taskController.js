@@ -4,73 +4,33 @@ const Task = require("../models/taskModel");
 const Batch = require("../models/batchModel");
 
 const getTasks = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  const tasks = await Task.find().populate("batch");
 
-  // find batch by supplied batch id
-  const batch = await Batch.findById(batchId).populate("tasks");
-  // check if batch is returned
-  if (!batch) {
-    res.status(400);
-    throw new Error("Batch not found");
-  }
-  // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  }
-
-  res.status(200).json(batch.tasks);
+  res.status(200).json(tasks);
 });
 
 const setTask = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  const { batch } = req.body;
 
   // find batch by supplied batch id
-  const batch = await Batch.findById(batchId);
+  const batchExist = await Batch.findById(batch);
   // check if batch is returned
-  if (!batch) {
+  if (!batchExist) {
     res.status(400);
     throw new Error("Batch not found");
   }
   // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
+  if (batchExist.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("Unable to modify batch");
   }
 
-  const task = await Task.create({
-    name: req.body.name,
-    frequency: req.body.frequency,
-  });
-
-  await Batch.findByIdAndUpdate(
-    batch.id,
-    {
-      tasks: [...batch.tasks, task.id],
-    },
-    { new: true }
-  );
+  const task = await Task.create(req.body);
 
   res.status(200).json(task);
-  // res.status(200);
 });
 
 const updateTask = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
-
-  // find batch by supplied batch id
-  const batch = await Batch.findById(batchId);
-  // check if batch is returned
-  if (!batch) {
-    res.status(400);
-    throw new Error("Batch not found");
-  }
-  // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  }
-
   const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
