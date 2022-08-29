@@ -84,20 +84,21 @@ const getUser = asyncHandler(async (req, res) => {
 //@route      api/users/invite
 //@req        name: requireds, email: required, role: optional
 const inviteUser = asyncHandler(async (req, res) => {
-  const { name, email, role } = req.body;
-  if (!name || !email) {
+  const { firstName, lastName, email, role } = req.body;
+  if (!firstName || !lastName || !email) {
     res.status(400);
     throw new Error("Please add necessary details");
   }
 
-  const userExists = await User.findOne({ email: email });
+  /* const userExists = await User.findOne({ email: email });
   if (userExists) {
     res.status(400);
     throw new Error("User Already Exsists");
   }
-
+ */
   const invitedUser = {
-    name: name,
+    firstName: firstName,
+    lastName: lastName,
     email: email,
     role: role ? role : "worker",
   };
@@ -161,7 +162,8 @@ const generateToken = (id) => {
 const generateInviteToken = (invitedUser) => {
   return jwt.sign(
     {
-      name: invitedUser.name,
+      firstName: invitedUser.firstName,
+      lastName: invitedUser.lastName,
       email: invitedUser.email,
       role: invitedUser.role,
     },
