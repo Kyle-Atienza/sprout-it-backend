@@ -14,15 +14,6 @@ const batchSchema = mongoose.Schema(
       type: String,
       default: "composting",
     },
-    /*  materials: {
-      kusot: Number,
-      dayami: Number,
-      apog: Number,
-      darakPino: Number,
-      darakMixed: Number,
-      asukal: Number,
-      tubig: Number,
-    }, */
     materials: [
       {
         material: {
@@ -55,12 +46,6 @@ const batchSchema = mongoose.Schema(
       waiting: Date,
       defects: Number,
     },
-    tasks: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
     harvests: [
       {
         type: mongoose.Schema.Types.ObjectId,
