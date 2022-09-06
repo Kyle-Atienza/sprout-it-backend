@@ -179,7 +179,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   let details = {
     from: "sproutitservice@gmail.com",
-    to: "atienzakylefrancis@gmail.com",
+    to: user.email,
     subject: `SproutIt Password Reset for ${user.email}`,
     text: `http://localhost:3000/reset-password/${token}`,
   };
