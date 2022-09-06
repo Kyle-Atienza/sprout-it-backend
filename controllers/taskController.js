@@ -10,7 +10,7 @@ const getTasks = asyncHandler(async (req, res) => {
 });
 
 const setTask = asyncHandler(async (req, res) => {
-  const { batch } = req.body;
+  /* const { batch } = req.body;
 
   // find batch by supplied batch id
   const batchExist = await Batch.findById(batch);
@@ -23,7 +23,7 @@ const setTask = asyncHandler(async (req, res) => {
   if (batchExist.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("Unable to modify batch");
-  }
+  } */
 
   const task = await Task.create(req.body);
 

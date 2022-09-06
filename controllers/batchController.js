@@ -26,7 +26,7 @@ const setBatch = asyncHandler(async (req, res) => {
     owner: req.user.id,
     farm: req.user.farm,
     active: true,
-    activePhase: "composting",
+    activePhase: "pre",
     name: batches.length + 1,
     materials: materials,
     composting: {
@@ -76,10 +76,10 @@ const updateBatch = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (batch.owner.toString() !== req.user.id) {
+  /* if (batch.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("User not authorized");
-  }
+  } */
 
   const updatedBatch = await Batch.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

@@ -10,6 +10,7 @@ const taskSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add name"],
     },
+    for: String,
     description: String,
     status: {
       type: String,
