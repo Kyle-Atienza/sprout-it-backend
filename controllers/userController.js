@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
 
 const User = require("../models/userModel");
 
@@ -151,6 +152,75 @@ const registerInvitedUser = asyncHandler(async (req, res) => {
   res.status(200).json(user);
 });
 
+const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(400);
+    throw new Error("User not existing");
+  }
+
+  const secret = process.env.JWT_SECRET + user.password;
+  const payload = {
+    email: user.email,
+    id: user._id,
+  };
+
+  const token = jwt.sign(payload, secret, { expiresIn: "15m" });
+
+  let mailTransporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "sproutitservice@gmail.com",
+      pass: "vpkjtyjbsjiaaxhm",
+    },
+  });
+
+  let details = {
+    from: "sproutitservice@gmail.com",
+    to: "atienzakylefrancis@gmail.com",
+    subject: `SproutIt Password Reset for ${user.email}`,
+    text: `http://localhost:3000/reset-password/${token}`,
+  };
+
+  mailTransporter.sendMail(details, (err) => {
+    if (err) {
+      res.status(400);
+      throw new Error(err);
+    } else {
+      res.status(200).json({
+        "reset password link": `http://localhost:3000/reset-password/${token}`,
+      });
+    }
+  });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { id, email, password } = req.body;
+
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    res.status(400);
+    throw new Error("User not existing");
+  }
+
+  //hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  //update user
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      password: hashedPassword,
+    },
+    { new: true }
+  );
+
+  res.status(200).json(updatedUser);
+});
+
 //generate token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -185,4 +255,6 @@ module.exports = {
   getUser,
   inviteUser,
   registerInvitedUser,
+  forgotPassword,
+  resetPassword,
 };
