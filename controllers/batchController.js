@@ -1,3 +1,5 @@
+const dt = require("luxon").DateTime;
+
 const asyncHandler = require("express-async-handler");
 const Batch = require("../models/batchModel");
 
@@ -29,26 +31,32 @@ const setBatch = asyncHandler(async (req, res) => {
     activePhase: "pre",
     name: batches.length + 1,
     materials: materials,
+    startedAt: new Date(),
     composting: {
+      date: null,
       moisture: 0,
       period: null,
       mixFrequency: 0,
     },
     bagging: {
+      date: null,
       bagWeight: 0,
       total: 0,
       defects: 0,
     },
     sterilization: {
+      date: null,
       duration: null,
       defects: 0,
     },
     inoculation: {
+      date: null,
       spawn: "",
       total: 0,
       defects: 0,
     },
     fruiting: {
+      date: null,
       waiting: null,
       defects: 0,
     },

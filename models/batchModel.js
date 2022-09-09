@@ -24,25 +24,31 @@ const batchSchema = mongoose.Schema(
       },
     ],
     composting: {
+      startedAt: Date,
       moisture: Number,
       period: Date, //finish date of composting
       mixFrequency: Number,
     },
     bagging: {
+      startedAt: Date,
       bagWeight: Number,
       total: Number,
       defects: Number,
     },
     sterilization: {
+      startedAt: Date,
       duration: Date,
       defects: Number,
     },
+
     inoculation: {
+      startedAt: Date,
       spawn: String,
       total: Number,
       defects: Number,
     },
     fruiting: {
+      startedAt: Date,
       waiting: Date,
       defects: Number,
     },
@@ -52,7 +58,7 @@ const batchSchema = mongoose.Schema(
         ref: "Harvest",
       },
     ],
-    finishedAt: Date,
+    finishedAt: String,
   },
   {
     timestamps: true,
