@@ -11,6 +11,10 @@ const materialSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add unit"],
     },
+    quantity: {
+      type: Number,
+      required: [true, "Please add quantity"],
+    }
   },
   {
     timestamps: true,
