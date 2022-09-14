@@ -10,22 +10,19 @@ const getTasks = asyncHandler(async (req, res) => {
 });
 
 const setTask = asyncHandler(async (req, res) => {
-  /* const { batch } = req.body;
+  const { start } = req.body;
+  let next;
 
-  // find batch by supplied batch id
-  const batchExist = await Batch.findById(batch);
-  // check if batch is returned
-  if (!batchExist) {
-    res.status(400);
-    throw new Error("Batch not found");
+  if (start.by === "date") {
+    next = start.on;
+  } else {
+    next = new Date(999999999999999);
   }
-  // verify if creator owns the batch
-  if (batchExist.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  } */
 
-  const task = await Task.create(req.body);
+  const task = await Task.create({
+    ...req.body,
+    next: next,
+  });
 
   res.status(200).json(task);
 });

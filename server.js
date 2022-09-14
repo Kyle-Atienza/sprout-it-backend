@@ -27,6 +27,22 @@ app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/material", require("./routes/materialRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/farm", require("./routes/farmRoutes"));
+// Subscribe Route
+app.post("/subscribe", (req, res) => {
+  // Get pushSubscription object
+  const subscription = req.body;
+
+  // Send 201 - resource created
+  res.status(201).json({});
+
+  // Create payload
+  const payload = JSON.stringify({ title: "Push Test" });
+
+  // Pass object into sendNotification
+  webpush
+    .sendNotification(subscription, payload)
+    .catch((err) => console.error(err));
+});
 
 app.use(errorHandler);
 
