@@ -26,10 +26,10 @@ const getMaterials = asyncHandler(async (req, res) => {
   res.status(200).json(materials);
 });
 
-const setMaterial = asyncHandler(async (req, res) => {
-  const { name, unit } = req.body;
+const postMaterial = asyncHandler(async (req, res) => {
+  const { name, unit, quantity, price } = req.body;
 
-  if (!name || !unit) {
+  if (!name || !unit || !quantity || !price) {
     res.status(400);
     throw new Error("Please provide necessary details");
   }
@@ -38,11 +38,13 @@ const setMaterial = asyncHandler(async (req, res) => {
     name: req.body.name,
     altName: req.body.altName,
     unit: req.body.unit,
+    quantity: req.body.quantity,
+    price: req.body.price
   });
   res.status(200).json(material);
 });
 
-const updateMaterial = asyncHandler(async (req, res) => {
+const putMaterial = asyncHandler(async (req, res) => {
   const { batchId } = req.body;
 
   // find batch by supplied batch id
@@ -70,25 +72,25 @@ const updateMaterial = asyncHandler(async (req, res) => {
 });
 
 const deleteMaterial = asyncHandler(async (req, res) => {
-  const material = await Material.findById(req.params.id);
+  const material = await Material.findById(req.params.id); //TODO: Change to material
 
-  const { batchId } = req.body;
+  // const { batchId } = req.body;
 
-  // find batch by supplied batch id
-  const batch = await Batch.findById(batchId);
+  // // find batch by supplied batch id
+  // const batch = await Batch.findById(batchId); 
   // check if batch is returned
-  if (!batch) {
-    res.status(400);
-    throw new Error("Batch not found");
-  }
-  // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  }
+  // if (!batch) {
+  //   res.status(400);
+  //   throw new Error("Batch not found");
+  // }
+  // // verify if creator owns the batch
+  // if (batch.owner.toString() !== req.user.id) {
+  //   res.status(400);
+  //   throw new Error("Unable to modify batch");
+  // }
 
   if (!material) {
-    res.status(200);
+    res.status(400);
     throw new Error("material not found");
   }
 
@@ -101,7 +103,7 @@ const deleteMaterial = asyncHandler(async (req, res) => {
 
 module.exports = {
   getMaterials,
-  setMaterial,
-  updateMaterial,
+  setMaterial: postMaterial,
+  updateMaterial: putMaterial,
   deleteMaterial,
 };
