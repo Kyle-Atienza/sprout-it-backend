@@ -1,7 +1,9 @@
 const asyncHandler = require("express-async-handler");
+const schedule = require("node-schedule");
 
 const Task = require("../models/taskModel");
 const Batch = require("../models/batchModel");
+const scheduler = require("../services/schedule");
 
 const getTasks = asyncHandler(async (req, res) => {
   const tasks = await Task.find().populate("batch");
@@ -10,24 +12,39 @@ const getTasks = asyncHandler(async (req, res) => {
 });
 
 const setTask = asyncHandler(async (req, res) => {
-  const { start } = req.body;
-  let next;
-
-  if (start.by === "date") {
-    next = start.on;
-  } else {
-    next = new Date(999999999999999);
-  }
+  console.log(req.body);
 
   const task = await Task.create({
     ...req.body,
-    next: next,
+    occurrence: 0,
   });
+
+  if (task.start.by === "date") {
+    scheduler.createSchedule(task);
+  }
+
+  if (task.end.by === "date") {
+    //schedule cancel task
+    console.log(task.end.on);
+    scheduler.scheduleCancelSchedule(new Date(task.end.on), task._id);
+  }
 
   res.status(200).json(task);
 });
 
 const updateTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+
+  if (!task) {
+    res.status(404);
+    throw new Error("Task not found");
+  }
+
+  if (req.body.status === "cancel") {
+    //cancel task
+    schedule.cancelJob(task._id.toString());
+  }
+
   const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
@@ -38,23 +55,8 @@ const updateTask = asyncHandler(async (req, res) => {
 const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.id);
 
-  const { batchId } = req.body;
-
-  // find batch by supplied batch id
-  const batch = await Batch.findById(batchId);
-  // check if batch is returned
-  if (!batch) {
-    res.status(400);
-    throw new Error("Batch not found");
-  }
-  // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  }
-
   if (!task) {
-    res.status(200);
+    res.status(404);
     throw new Error("Task not found");
   }
 

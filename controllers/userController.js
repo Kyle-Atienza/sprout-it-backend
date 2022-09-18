@@ -63,6 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       token: generateToken(user._id),
+      fcmToken: user.fcmToken ? user.fcmToken : "",
     });
   } else {
     res.status(400);
@@ -79,6 +80,25 @@ const getUser = asyncHandler(async (req, res) => {
       email: req.user.email,
     });
   }
+});
+
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  console.log(user);
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User does not exist");
+  }
+
+  console.log(req.body.fcmToken);
+
+  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json(updatedUser);
 });
 
 //@desc       generate invite token
@@ -253,6 +273,7 @@ module.exports = {
   registerUser,
   loginUser,
   getUser,
+  updateUser,
   inviteUser,
   registerInvitedUser,
   forgotPassword,

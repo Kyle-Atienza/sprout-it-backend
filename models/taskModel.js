@@ -38,7 +38,7 @@ const taskSchema = mongoose.Schema(
       by: String,
       on: mongoose.Mixed,
     },
-    next: Date,
+    occurrence: Number,
   },
   {
     timestamps: true,
