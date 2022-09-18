@@ -14,7 +14,8 @@ const materialSchema = mongoose.Schema(
     quantity: {
       type: Number,
       required: [true, "Please add quantity"],
-    }
+    },
+    price: Number,
   },
   {
     timestamps: true,
