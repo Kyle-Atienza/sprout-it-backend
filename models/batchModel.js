@@ -25,32 +25,32 @@ const batchSchema = mongoose.Schema(
     ],
     composting: {
       startedAt: Date,
-      moisture: Number,
-      period: Date, //finish date of composting
-      mixFrequency: Number,
+      waiting: String, //before 2 weeks
+      mixFrequency: Number, // before
+      moisture: Number, // after 7
+      defects: Number, //after 2
     },
     bagging: {
       startedAt: Date,
-      bagWeight: Number,
-      total: Number,
-      defects: Number,
+      bagWeight: Number, //before 1.5
+      total: Number, //after 76
+      defects: Number, //after 3
     },
     sterilization: {
       startedAt: Date,
-      duration: Date,
-      defects: Number,
+      waiting: String, //before 8 hours
+      defects: Number, //after 4
     },
-
     inoculation: {
       startedAt: Date,
-      spawn: String,
-      total: Number,
-      defects: Number,
+      spawn: String, //before sorgum
+      total: Number, //after 73
+      defects: Number, //after 1
     },
     fruiting: {
       startedAt: Date,
-      waiting: Date,
-      defects: Number,
+      waiting: String, //before 1 month
+      defects: Number, //after 4
     },
     harvests: [
       {

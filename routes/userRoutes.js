@@ -5,6 +5,7 @@ const {
   registerUser,
   loginUser,
   getUser,
+  updateUser,
   inviteUser,
   registerInvitedUser,
   forgotPassword,
@@ -13,6 +14,7 @@ const {
 
 router.post("/register", registerUser);
 router.post("/register/:invite", registerInvitedUser);
+router.put("/:id", updateUser);
 router.post("/login", loginUser);
 router.post("/invite", inviteUser);
 router.get("/profile", getUser);

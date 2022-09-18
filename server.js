@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const scheduler = require("./services/schedule");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
@@ -33,3 +34,9 @@ app.use(errorHandler);
 app.listen(port, () => {
   console.log("SproutIt server initiated at port " + port);
 });
+
+// reschedule existing tasks after server is initiated
+(async () => {
+  await scheduler.reSchedule();
+  console.log(scheduler.getJobs());
+})();

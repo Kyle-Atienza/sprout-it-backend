@@ -32,34 +32,6 @@ const setBatch = asyncHandler(async (req, res) => {
     name: batches.length + 1,
     materials: materials,
     startedAt: new Date(),
-    composting: {
-      date: null,
-      moisture: 0,
-      period: null,
-      mixFrequency: 0,
-    },
-    bagging: {
-      date: null,
-      bagWeight: 0,
-      total: 0,
-      defects: 0,
-    },
-    sterilization: {
-      date: null,
-      duration: null,
-      defects: 0,
-    },
-    inoculation: {
-      date: null,
-      spawn: "",
-      total: 0,
-      defects: 0,
-    },
-    fruiting: {
-      date: null,
-      waiting: null,
-      defects: 0,
-    },
   });
 
   res.status(200).json(batch);

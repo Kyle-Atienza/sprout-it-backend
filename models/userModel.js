@@ -18,6 +18,7 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "worker",
     },
+    fcmToken: String,
   },
   {
     timestamps: true,
