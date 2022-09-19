@@ -14,6 +14,10 @@ const materialSchema = mongoose.Schema(
     quantity: {
       type: Number,
       required: [true, "Please add quantity"],
+    },
+    price: {
+      type: Number,
+      required: [true, "Please add price"],
     }
   },
   {
