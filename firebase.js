@@ -13,6 +13,11 @@ const sendMulticastNotification = function (payload) {
     notification: {
       title: payload.title,
       body: payload.body,
+      ...payload.data,
+    },
+    data: {
+      title: payload.title,
+      body: payload.body,
     },
     apns: {
       payload: {
@@ -22,7 +27,6 @@ const sendMulticastNotification = function (payload) {
       },
     },
     tokens: payload.tokens,
-    data: payload.data || {},
   };
 
   return admin.messaging().sendMulticast(message);

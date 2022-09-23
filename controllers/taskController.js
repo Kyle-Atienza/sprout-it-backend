@@ -12,22 +12,24 @@ const getTasks = asyncHandler(async (req, res) => {
 });
 
 const setTask = asyncHandler(async (req, res) => {
-  console.log(req.body);
+  console.log(new Date(`${req.body.start.on} ${req.body.time}`));
 
   const task = await Task.create({
     ...req.body,
     occurrence: 0,
+    next:
+      req.body.start.by === "date"
+        ? new Date(`${req.body.start.on} ${req.body.time}`)
+        : null,
   });
 
   if (task.start.by === "date") {
     scheduler.createSchedule(task);
   }
 
-  if (task.end.by === "date") {
-    //schedule cancel task
-    console.log(task.end.on);
+  /* if (task.end.by === "date") {
     scheduler.scheduleCancelSchedule(new Date(task.end.on), task._id);
-  }
+  } */
 
   res.status(200).json(task);
 });

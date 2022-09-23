@@ -56,6 +56,10 @@ const updateBatch = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  if (req.body.activePhase) {
+    // startPhaseJob(phase)
+  }
+
   /* if (batch.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("User not authorized");

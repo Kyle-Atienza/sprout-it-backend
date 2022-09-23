@@ -6,6 +6,21 @@ const User = require("../models/userModel");
 const Task = require("../models/taskModel");
 const taskModel = require("../models/taskModel");
 
+function setTimeout_(fn, delay) {
+  var maxDelay = Math.pow(2, 31) - 1;
+
+  if (delay > maxDelay) {
+    var args = arguments;
+    args[1] -= maxDelay;
+
+    return setTimeout(function () {
+      setTimeout_.apply(undefined, args);
+    }, maxDelay);
+  }
+
+  return setTimeout.apply(undefined, arguments);
+}
+
 const scheduledTime = (task) => {
   const day = new Date(task.next).getDay();
   const date = new Date(task.next).getDate();
@@ -16,7 +31,7 @@ const scheduledTime = (task) => {
   let rule;
 
   if (task.frequency === "once") {
-    rule = new Date(task.next);
+    cron = new Date(task.next);
   } else if (task.frequency === "daily") {
     cron = `${minutes} ${hours} * * *`;
   } else if (task.frequency === "weekly") {
@@ -40,7 +55,7 @@ const scheduledTime = (task) => {
     };
   }
 
-  return rule;
+  return cron;
 };
 
 const updateTask = async (payload, task) => {
@@ -82,7 +97,7 @@ const scheduledJob = async (task) => {
 
       console.log("next", new Date(job.nextInvocation()));
 
-      //update occurence of task
+      //update task
       updateTask(
         {
           occurrence: (task.occurrence += 1),
@@ -91,7 +106,7 @@ const scheduledJob = async (task) => {
         task
       );
 
-      //update status of task
+      //finish task if once
       if (task.frequency === "once") {
         updateTask(
           {
@@ -103,6 +118,7 @@ const scheduledJob = async (task) => {
         console.log("task finished");
       }
 
+      // finish task by occurrence
       if (task.end.by === "occurrence") {
         if (task.end.on === task.occurrence) {
           updateTask(
@@ -121,7 +137,18 @@ const scheduledJob = async (task) => {
 
 const createSchedule = async (task) => {
   try {
-    scheduledJob(task);
+    /* if (new Date(task.next) - Date.now() < 10000) {
+      await scheduledJob(task);
+    } */
+    setTimeout_(async () => {
+      await scheduledJob(task);
+
+      if (task.end.by === "date") {
+        schedule.scheduleJob(new Date(task.end.on), () => {
+          schedule.cancelJob(task._id);
+        });
+      }
+    }, new Date(task.next) - Date.now() - 10000);
   } catch (error) {
     throw error;
   }
@@ -131,15 +158,22 @@ const reSchedule = async () => {
   try {
     const tasks = await Task.find({});
 
-    tasks.forEach((task) => {
+    tasks.forEach(async (task) => {
       if (task.status === "ongoing") {
-        scheduledJob(task);
-      }
-      if (task.end.by === "date") {
-        scheduler.scheduleCancelJob(new Date(task.end.on), task._id);
+        setTimeout_(async () => {
+          await scheduledJob(task);
+          if (task.end.by === "date") {
+            schedule.scheduleJob(new Date(task.end.on), () => {
+              schedule.cancelJob(task._id);
+            });
+          }
+        }, new Date(task.next) - Date.now() - 10000);
+
+        if (task.end.by === "date") {
+          await scheduler.scheduleCancelJob(new Date(task.end.on), task._id);
+        }
       }
     });
-    console.log("tasks rescheduled");
   } catch (error) {
     throw error;
   }
@@ -150,12 +184,6 @@ const scheduleCancelJob = async (scheduledCancel, task) => {
     schedule.cancelJob(task);
   });
 };
-
-/* const scheduleStartJob = async (scheduledStart, task) => {
-  schedule.scheduleJob(scheduledStart, () => {
-    schedule.cancelJob(task);
-  });
-}; */
 
 const getJobs = () => {
   return schedule.scheduledJobs;

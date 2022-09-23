@@ -38,5 +38,4 @@ app.listen(port, () => {
 // reschedule existing tasks after server is initiated
 (async () => {
   await scheduler.reSchedule();
-  console.log(scheduler.getJobs());
 })();
