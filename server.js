@@ -28,6 +28,8 @@ app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/material", require("./routes/materialRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/farm", require("./routes/farmRoutes"));
+app.use("/api/purchase", require("./routes/purchaseRoutes"));
+app.use("/api/supplier", require("./routes/supplierRoutes"));
 
 app.use(errorHandler);
 
