@@ -20,6 +20,11 @@ const purchaseSchema = mongoose.Schema(
       ref: "Supplier",
       required: [true, "Please add supplier"],
     },
+    /* supplier: {
+      name: String,
+      address: String,
+      contact: String,
+    } */
   },
   {
     timestamps: true,

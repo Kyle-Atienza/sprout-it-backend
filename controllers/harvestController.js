@@ -24,7 +24,6 @@ const getHarvests = asyncHandler(async (req, res) => {
 
 const setHarvest = asyncHandler(async (req, res) => {
   const { batchId } = req.body;
-  console.log(batchId);
 
   // get batch from body
   const batch = await Batch.findById(batchId);
@@ -33,6 +32,20 @@ const setHarvest = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Batch not found");
   }
+
+  const harvests = await Harvest.find();
+
+  const duplicate = harvests.some((harvest) => {
+    return (
+      new Date(harvest.createdAt).toDateString() === new Date().toDateString()
+    );
+  });
+
+  if (duplicate) {
+    res.status(400);
+    throw new Error("You cannot create more than one entry of harvest per day");
+  }
+
   // verify if creator owns the batch
   if (batch.owner.toString() !== req.user.id) {
     res.status(400);

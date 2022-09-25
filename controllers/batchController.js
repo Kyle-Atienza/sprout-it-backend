@@ -8,7 +8,7 @@ const getBatches = asyncHandler(async (req, res) => {
 
   // const batches = await Batch.find().populate("tasks materials harvests");
   const batches = await Batch.find().populate({
-    path: "materials.material",
+    path: "materials.material harvests",
   });
 
   res.status(200).json(batches);
