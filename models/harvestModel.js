@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 
 const harvestsSchema = mongoose.Schema({
-  date: {
+  batch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Batch",
+  },
+  datetime: {
     type: Date,
-    required: [true, "Please add Date"],
+    required: [true, "Please add Datetime"],
   },
   weight: {
     type: Number,
     required: [true, "Please add Weight"],
-  },
-  batch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Batch",
   },
 });
 

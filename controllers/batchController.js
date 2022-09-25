@@ -14,6 +14,19 @@ const getBatches = asyncHandler(async (req, res) => {
   res.status(200).json(batches);
 });
 
+const getBatch = asyncHandler(async (req, res) => {
+  const batch = await Batch.findById(req.params.id).populate({
+    path: "materials.material harvests",
+  });
+
+  if (!batch) {
+    res.status(400);
+    throw new Error("Batch not found");
+  }
+
+  res.status(200).json(batch);
+});
+
 const setBatch = asyncHandler(async (req, res) => {
   const { activePhase, active, materials } = req.body;
 
@@ -99,6 +112,7 @@ const deleteBatch = asyncHandler(async (req, res) => {
 
 module.exports = {
   getBatches,
+  getBatch,
   setBatch,
   updateBatch,
   deleteBatch,

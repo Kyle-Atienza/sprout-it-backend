@@ -24,9 +24,10 @@ const getHarvests = asyncHandler(async (req, res) => {
 
 const setHarvest = asyncHandler(async (req, res) => {
   const { batchId } = req.body;
+  console.log(batchId);
 
   // get batch from body
-  const batch = await Batch.findById(batchId).populate("tasks");
+  const batch = await Batch.findById(batchId);
   // check if batch is returned
   if (!batch) {
     res.status(400);
@@ -39,7 +40,8 @@ const setHarvest = asyncHandler(async (req, res) => {
   }
 
   const harvest = await Harvest.create({
-    date: new Date(new Date().toDateString()),
+    batch: batchId,
+    datetime: new Date(new Date().toDateString()),
     weight: req.body.weight,
   });
 
