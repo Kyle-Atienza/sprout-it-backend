@@ -28,21 +28,6 @@ const postMaterial = asyncHandler(async (req, res) => {
 });
 
 const putMaterial = asyncHandler(async (req, res) => {
-  // const { batchId } = req.body;
-
-  // // find batch by supplied batch id
-  // const batch = await Batch.findById(batchId);
-  // // check if batch is returned
-  // if (!batch) {
-  //   res.status(400);
-  //   throw new Error("Batch not found");
-  // }
-  // // verify if creator owns the batch
-  // if (batch.owner.toString() !== req.user.id) {
-  //   res.status(400);
-  //   throw new Error("Unable to modify batch");
-  // }
-
   const updatedMaterial = await Material.findByIdAndUpdate(
     req.params.id,
     req.body,
