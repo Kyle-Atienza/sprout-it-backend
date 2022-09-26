@@ -10,9 +10,11 @@ const {
   deleteHarvest,
 } = require("../controllers/harvestController");
 
-router.get("/", protect, getHarvests);
-router.post("/", protect, setHarvest);
-router.put("/:id", protect, updateHarvest);
-router.delete("/:id", protect, deleteHarvest);
+router.get("/:batchId", protect, getHarvests);
+router.post("/:batchId", protect, setHarvest);
+router.put("/:harvestId", protect, updateHarvest);
+router.delete("/:harvestId", protect, deleteHarvest);
+
+// TODO: update same as above
 
 module.exports = router;

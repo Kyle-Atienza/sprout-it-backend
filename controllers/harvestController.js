@@ -4,7 +4,7 @@ const Harvest = require("../models/harvestModel");
 const Batch = require("../models/batchModel");
 
 const getHarvests = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  const { batchId } = req.params;
 
   // find batch by supplied batch id
   const batch = await Batch.findById(batchId).populate("harvests");
@@ -23,7 +23,7 @@ const getHarvests = asyncHandler(async (req, res) => {
 });
 
 const setHarvest = asyncHandler(async (req, res) => {
-  const { batchId } = req.body;
+  const { batchId } = req.params;
 
   // get batch from body
   const batch = await Batch.findById(batchId);
@@ -70,19 +70,19 @@ const setHarvest = asyncHandler(async (req, res) => {
 });
 
 const updateHarvest = asyncHandler(async (req, res) => {
-  const updatedHarvest = await Harvest.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-    }
-  );
+  const { harvestId } = req.params;
+
+  const updatedHarvest = await Harvest.findByIdAndUpdate(harvestId, req.body, {
+    new: true,
+  });
 
   res.status(200).json(updatedHarvest);
 });
 
 const deleteHarvest = asyncHandler(async (req, res) => {
-  const harvest = await Harvest.findById(req.params.id);
+  const { harvestId } = req.params;
+
+  const harvest = await Harvest.findById(harvestId);
 
   if (!harvest) {
     res.status(200);
@@ -92,7 +92,7 @@ const deleteHarvest = asyncHandler(async (req, res) => {
   await harvest.remove();
 
   res.status(200).json({
-    message: "Deleted harvest " + req.params.id,
+    message: "Deleted harvest " + harvestId,
   });
 });
 
