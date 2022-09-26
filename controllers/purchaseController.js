@@ -12,9 +12,9 @@ const getPurchases = asyncHandler(async (req, res) => {
 });
 
 const setPurchase = asyncHandler(async (req, res) => {
-  const { materialId, quantity, price, supplier } = req.body;
+  const { materialId, quantity, price, supplierId } = req.body;
 
-  if (!materialId || !quantity || !price || !supplier) {
+  if (!materialId || !quantity || !price || !supplierId) {
     res.status(400);
     throw new Error("Please provide necessary details");
   }
@@ -39,7 +39,7 @@ const setPurchase = asyncHandler(async (req, res) => {
     material: materialId,
     quantity: quantity,
     price: price,
-    supplier: supplier,
+    supplier: supplierId,
   });
   res.status(200).json(purchase);
 });
