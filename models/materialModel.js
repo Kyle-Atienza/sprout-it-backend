@@ -15,10 +15,10 @@ const materialSchema = mongoose.Schema(
       type: Number,
       required: [true, "Please add quantity"],
     },
-    price: {
+    /* price: {
       type: Number,
       required: [true, "Please add price"],
-    },
+    }, */
   },
   {
     timestamps: true,
