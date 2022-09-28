@@ -2,6 +2,7 @@ const dt = require("luxon").DateTime;
 
 const asyncHandler = require("express-async-handler");
 const Batch = require("../models/batchModel");
+const Material = require("../models/materialModel");
 
 const getBatches = asyncHandler(async (req, res) => {
   // TODO: add authentication
@@ -37,9 +38,46 @@ const setBatch = asyncHandler(async (req, res) => {
 
   const batches = await Batch.find({});
 
+  //get all materials
+  // check if there is sufficient materials
+  const materialIds = await materials.map((material) => material.material);
+  const batchMaterials = await Material.find({
+    _id: { $in: materialIds },
+  });
+
+  const isMaterialsSufficient = !materials.some((material) => {
+    return (
+      parseFloat(material.weight) >
+      batchMaterials.find((batchMaterial) => {
+        return material.material === batchMaterial._id.toString();
+      }).quantity
+    );
+  });
+
+  //substract materials from inventory
+  if (!isMaterialsSufficient) {
+    res.status(400);
+    throw new Error("Insuficcient Materials");
+  }
+
+  batchMaterials.forEach(async (batchMaterial) => {
+    const updatedQuantity =
+      batchMaterial.quantity -
+      materials.find((material) => {
+        return material.material === batchMaterial._id.toString();
+      }).weight;
+
+    await Material.findByIdAndUpdate(
+      batchMaterial._id,
+      {
+        quantity: updatedQuantity,
+      },
+      { new: true }
+    );
+  });
+
   const batch = await Batch.create({
     owner: req.user.id,
-    farm: req.user.farm,
     active: true,
     activePhase: "pre",
     name: batches.length + 1,
