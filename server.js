@@ -16,10 +16,7 @@ const app = express();
 app.use(
   cors({
     // origin: ["http://localhost:3000", "https://sprout-it-43e51.web.app"],
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://sprout-it-43e51.web.app"
-        : "http://localhost:3000",
+    origin: "https://sprout-it-43e51.web.app",
   })
 );
 
