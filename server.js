@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://sprout-it-frontend.vercel.app",
   })
 );
 
