@@ -10,6 +10,7 @@ const batchSchema = mongoose.Schema(
     },
     name: String,
     active: Boolean,
+    value: Number,
     activePhase: {
       type: String,
       default: "composting",

@@ -31,6 +31,7 @@ const setPurchase = asyncHandler(async (req, res) => {
     materialId,
     {
       quantity: material.quantity + parseFloat(quantity),
+      price: price,
     },
     { new: true }
   );

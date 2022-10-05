@@ -54,13 +54,13 @@ const setBatch = asyncHandler(async (req, res) => {
     );
   });
 
-  //substract materials from inventory
   if (!isMaterialsSufficient) {
     res.status(400);
     throw new Error("Insuficcient Materials");
   }
 
   batchMaterials.forEach(async (batchMaterial) => {
+    // update material quantity on create batch
     const updatedQuantity =
       batchMaterial.quantity -
       materials.find((material) => {
@@ -76,12 +76,25 @@ const setBatch = asyncHandler(async (req, res) => {
     );
   });
 
+  const totalValue = batchMaterials.reduce((prev, currentMaterial) => {
+    return (
+      prev +
+      currentMaterial.price *
+        parseFloat(
+          materials.find((material) => {
+            return material.material === currentMaterial._id.toString();
+          }).weight
+        )
+    );
+  }, 0);
+
   const batch = await Batch.create({
     owner: req.user.id,
     active: true,
     activePhase: "pre",
     name: batches.length + 1,
     materials: materials,
+    value: totalValue,
     startedAt: new Date(),
   });
 
@@ -123,6 +136,8 @@ const updateBatch = asyncHandler(async (req, res) => {
   res.status(200).json(updatedBatch);
 });
 
+const updateManyBatch = asyncHandler(async (req, res) => {});
+
 const deleteBatch = asyncHandler(async (req, res) => {
   const batch = await Batch.findById(req.params.id);
 
@@ -148,10 +163,21 @@ const deleteBatch = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteBatchesOnPhase = asyncHandler(async (req, res) => {
+  const deletedBatches = await Batch.deleteMany({
+    activePhase: req.params.phase,
+  });
+
+  res.status(200).json({
+    deletedBatches,
+  });
+});
+
 module.exports = {
   getBatches,
   getBatch,
   setBatch,
   updateBatch,
   deleteBatch,
+  deleteBatchesOnPhase,
 };
