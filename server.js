@@ -5,7 +5,7 @@ const scheduler = require("./services/schedule");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
-const port = 4040;
+const port = process.env.PORT || 4040;
 
 const connectDB = require("./config/db");
 
