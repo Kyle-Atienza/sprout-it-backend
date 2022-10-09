@@ -124,11 +124,6 @@ const updateBatch = asyncHandler(async (req, res) => {
     // startPhaseJob(phase)
   }
 
-  /* if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("User not authorized");
-  } */
-
   const updatedBatch = await Batch.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });

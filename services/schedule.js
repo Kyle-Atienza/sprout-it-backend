@@ -70,7 +70,6 @@ const updateTask = async (payload, task) => {
 };
 
 const scheduledJob = async (task) => {
-  console.log(scheduledTime(task));
   const job = schedule.scheduleJob(
     task._id.toString(),
     scheduledTime(task),
@@ -91,11 +90,13 @@ const scheduledJob = async (task) => {
         };
         return firebaseAdmin
           .sendMulticastNotification(payload)
-          .then((response) => console.log(response));
+          .then((response) =>
+            console.log("sendMulticastNotification", response)
+          );
       });
       await Promise.all(promises);
 
-      console.log("next", new Date(job.nextInvocation()));
+      // console.log("next", new Date(job.nextInvocation()));
 
       //update task
       updateTask(

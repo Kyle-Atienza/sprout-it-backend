@@ -26,16 +26,16 @@ const setHarvest = asyncHandler(async (req, res) => {
   const { batchId } = req.params;
 
   // get batch from body
-  const batch = await Batch.findById(batchId);
+  const batch = await Batch.findById(batchId).populate("harvests");
   // check if batch is returned
   if (!batch) {
     res.status(400);
     throw new Error("Batch not found");
   }
 
-  const harvests = await Harvest.find();
+  // const harvests = await Harvest.find();
 
-  const duplicate = harvests.some((harvest) => {
+  const duplicate = batch.harvests.some((harvest) => {
     return (
       new Date(harvest.createdAt).toDateString() === new Date().toDateString()
     );
