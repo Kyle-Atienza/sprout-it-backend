@@ -22,11 +22,14 @@ const postMaterial = asyncHandler(async (req, res) => {
     altName: req.body.altName,
     unit: req.body.unit,
     quantity: 0,
+    price: price,
   });
   res.status(200).json(material);
 });
 
 const putMaterial = asyncHandler(async (req, res) => {
+  console.log(req.body);
+
   const updatedMaterial = await Material.findByIdAndUpdate(
     req.params.id,
     req.body,

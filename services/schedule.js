@@ -69,6 +69,8 @@ const updateTask = async (payload, task) => {
 };
 
 const scheduledJob = async (task) => {
+  console.log(scheduledTime(task));
+
   const job = schedule.scheduleJob(
     task._id.toString(),
     scheduledTime(task),
