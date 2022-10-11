@@ -2,16 +2,26 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
 const scheduler = require("./services/schedule");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
+const app = express();
+
 const port = process.env.PORT || 4040;
 
+const appServer = createServer(app);
+const io = new Server(appServer, {
+  cors: {
+    origin: "*",
+  },
+});
+
+global.io = io;
+
 const connectDB = require("./config/db");
-
 connectDB();
-
-const app = express();
 
 app.use(
   cors({
@@ -30,14 +40,23 @@ app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/farm", require("./routes/farmRoutes"));
 app.use("/api/purchase", require("./routes/purchaseRoutes"));
 app.use("/api/supplier", require("./routes/supplierRoutes"));
+app.use("/api/notif", require("./routes/notificationRoutes"));
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log("SproutIt server initiated at port " + port);
+io.on("connection", (socket) => {
+  console.log("connected");
+
+  socket.on("disconnect", () => {
+    console.log("disconnected");
+  });
 });
 
-// reschedule existing tasks after server is initiated
+appServer.listen(port, () => {
+  console.log("SproutIt appServer initiated at port " + port);
+});
+
+// reschedule existing tasks after appServer is initiated
 (async () => {
   await scheduler.reSchedule();
 })();

@@ -2,9 +2,8 @@ const _ = require("lodash");
 const schedule = require("node-schedule");
 const firebaseAdmin = require("../firebase");
 
-const User = require("../models/userModel");
 const Task = require("../models/taskModel");
-const taskModel = require("../models/taskModel");
+const Notification = require("../models/notificationModel");
 
 function setTimeout_(fn, delay) {
   var maxDelay = Math.pow(2, 31) - 1;
@@ -74,7 +73,13 @@ const scheduledJob = async (task) => {
     task._id.toString(),
     scheduledTime(task),
     async () => {
-      const users = await User.find({});
+      await Notification.create({
+        title: task.name,
+        message: task.description,
+      });
+
+      await global.io.emit("notification-send", task.name);
+      /* const users = await User.find({});
       const chunks = _.chunk(users, 500);
       const promises = chunks.map(async (chunk) => {
         const tokens = [];
@@ -94,8 +99,7 @@ const scheduledJob = async (task) => {
             console.log("sendMulticastNotification", response)
           );
       });
-      await Promise.all(promises);
-
+      await Promise.all(promises); */
       // console.log("next", new Date(job.nextInvocation()));
 
       //update task
@@ -138,9 +142,6 @@ const scheduledJob = async (task) => {
 
 const createSchedule = async (task) => {
   try {
-    /* if (new Date(task.next) - Date.now() < 10000) {
-      await scheduledJob(task);
-    } */
     setTimeout_(async () => {
       await scheduledJob(task);
 
