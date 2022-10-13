@@ -19,6 +19,10 @@ const materialSchema = mongoose.Schema(
       type: Number,
       required: [true, "Please add price"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

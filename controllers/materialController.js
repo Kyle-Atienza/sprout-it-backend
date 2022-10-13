@@ -49,7 +49,15 @@ const deleteMaterial = asyncHandler(async (req, res) => {
     throw new Error("material not found");
   }
 
-  await material.remove();
+  await Material.findByIdAndUpdate(
+    req.params.id,
+    {
+      isDeleted: true,
+    },
+    {
+      new: true,
+    }
+  );
 
   res.status(200).json({
     message: "Deleted Material " + req.params.id,
