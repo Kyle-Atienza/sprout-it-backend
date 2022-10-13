@@ -154,7 +154,7 @@ const deleteBatch = asyncHandler(async (req, res) => {
   await batch.remove();
 
   res.status(200).json({
-    message: "Deleted Batch " + req.params.id,
+    id: batch._id,
   });
 });
 

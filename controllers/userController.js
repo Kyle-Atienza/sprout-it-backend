@@ -107,6 +107,21 @@ const updateUser = asyncHandler(async (req, res) => {
   res.status(200).json(updatedUser);
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User does not exist");
+  }
+
+  await user.remove();
+
+  res.status(200).json({
+    id: user._id,
+  });
+});
+
 //@desc       generate invite token
 //@route      api/users/invite
 //@req        name: requireds, email: required, role: optional
@@ -279,7 +294,9 @@ module.exports = {
   registerUser,
   loginUser,
   getUser,
+  getUsers,
   updateUser,
+  deleteUser,
   inviteUser,
   registerInvitedUser,
   forgotPassword,
