@@ -91,20 +91,35 @@ const getUsers = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
-  console.log(user);
+  const { password } = req.body;
 
   if (!user) {
     res.status(400);
     throw new Error("User does not exist");
   }
 
-  console.log(req.body.fcmToken);
+  if (password) {
+    console.log(password);
 
-  const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-  res.status(200).json(updatedUser);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        password: hashedPassword,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedUser);
+  } else {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
+  }
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

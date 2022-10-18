@@ -54,7 +54,7 @@ const deleteSupplier = asyncHandler(async (req, res) => {
   await supplier.remove();
 
   res.status(200).json({
-    message: "Deleted Supplier " + req.params.id,
+    id: req.params.id,
   });
 });
 

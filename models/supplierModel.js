@@ -14,6 +14,10 @@ const supplierSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add contact"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
