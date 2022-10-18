@@ -61,4 +61,4 @@ appServer.listen(port, () => {
   await scheduler.reSchedule();
 })();
 
-console.log(new Date());
+console.log(new Date().getTimezoneOffset());
