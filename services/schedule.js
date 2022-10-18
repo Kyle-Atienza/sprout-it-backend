@@ -81,6 +81,8 @@ const scheduledJob = async (task) => {
       });
 
       await global.io.emit("notification-send", task.name);
+
+      console.log("notification sent", task.name);
       /* const users = await User.find({});
       const chunks = _.chunk(users, 500);
       const promises = chunks.map(async (chunk) => {
