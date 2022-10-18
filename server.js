@@ -60,3 +60,5 @@ appServer.listen(port, () => {
 (async () => {
   await scheduler.reSchedule();
 })();
+
+console.log(new Date());
