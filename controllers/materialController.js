@@ -12,7 +12,7 @@ const getMaterials = asyncHandler(async (req, res) => {
 const postMaterial = asyncHandler(async (req, res) => {
   const { name, unit, price } = req.body;
 
-  if (!name || !unit || !price) {
+  if (!name || !unit) {
     res.status(400);
     throw new Error("Please provide necessary details");
   }
@@ -21,8 +21,6 @@ const postMaterial = asyncHandler(async (req, res) => {
     name: req.body.name,
     altName: req.body.altName,
     unit: req.body.unit,
-    quantity: 0,
-    price: price,
   });
   res.status(200).json(material);
 });

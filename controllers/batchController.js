@@ -89,7 +89,6 @@ const setBatch = asyncHandler(async (req, res) => {
   }, 0);
 
   const batch = await Batch.create({
-    owner: req.user.id,
     active: true,
     activePhase: "pre",
     name: batches.length + 1,

@@ -14,10 +14,10 @@ const getHarvests = asyncHandler(async (req, res) => {
     throw new Error("Batch not found");
   }
   // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
+  /* if (batch.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("Unable to modify batch");
-  }
+  } */
 
   res.status(200).json(batch.harvests);
 });
@@ -47,10 +47,10 @@ const setHarvest = asyncHandler(async (req, res) => {
   }
 
   // verify if creator owns the batch
-  if (batch.owner.toString() !== req.user.id) {
+  /* if (batch.owner.toString() !== req.user.id) {
     res.status(400);
     throw new Error("Unable to modify batch");
-  }
+  } */
 
   const harvest = await Harvest.create({
     batch: batchId,

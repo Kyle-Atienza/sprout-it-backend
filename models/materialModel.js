@@ -13,11 +13,11 @@ const materialSchema = mongoose.Schema(
     },
     quantity: {
       type: Number,
-      required: [true, "Please add quantity"],
+      default: 0,
     },
     price: {
       type: Number,
-      required: [true, "Please add price"],
+      default: 0,
     },
     isDeleted: {
       type: Boolean,
