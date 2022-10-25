@@ -62,5 +62,5 @@ appServer.listen(port, () => {
   await scheduler.reSchedule();
 })();
 
-console.log("epoch", new Date().toString());
-console.log("current", new Date().toISOString());
+/* console.log("current", new Date().toISOString());
+console.log("current", Date.now()); */

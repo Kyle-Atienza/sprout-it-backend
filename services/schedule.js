@@ -26,11 +26,17 @@ const scheduledTime = (task) => {
   const hours = task.time !== "allDay" ? new Date(task.next).getHours() : 0;
   const minutes = task.time !== "allDay" ? new Date(task.next).getMinutes() : 0;
 
+  let rule = new schedule.RecurrenceRule();
   let cron;
-  let rule;
+  // let rule;
+  rule.tz = "Asia/Manila";
 
   if (task.frequency === "once") {
-    cron = new Date(task.next);
+    const date = new Date(task.next);
+
+    rule.second = date.getSeconds();
+    rule.minute = date.getMinutes();
+    rule.hour = date.getHours();
   } else if (task.frequency === "daily") {
     cron = `${minutes} ${hours} * * *`;
   } else if (task.frequency === "weekly") {
@@ -54,7 +60,7 @@ const scheduledTime = (task) => {
     };
   }
 
-  return cron;
+  return rule;
 };
 
 const updateTask = async (payload, task) => {
@@ -82,32 +88,8 @@ const scheduledJob = async (task) => {
 
       await global.io.emit("notification-send", task.name);
 
-      console.log("notification sent", task.name);
-      /* const users = await User.find({});
-      const chunks = _.chunk(users, 500);
-      const promises = chunks.map(async (chunk) => {
-        const tokens = [];
-        chunk.forEach((user) => {
-          if (user.fcmToken) {
-            tokens.push(user.fcmToken);
-          }
-        });
-        const payload = {
-          tokens,
-          title: task.name,
-          body: task.description ? task.description : "",
-        };
-        return firebaseAdmin
-          .sendMulticastNotification(payload)
-          .then((response) =>
-            console.log("sendMulticastNotification", response)
-          );
-      });
-      await Promise.all(promises); */
-      // console.log("next", new Date(job.nextInvocation()));
-
       //update task
-      updateTask(
+      await updateTask(
         {
           occurrence: (task.occurrence += 1),
           next: new Date(job.nextInvocation()),
@@ -117,7 +99,7 @@ const scheduledJob = async (task) => {
 
       //finish task if once
       if (task.frequency === "once") {
-        updateTask(
+        await updateTask(
           {
             status: "finished",
           },
@@ -130,7 +112,7 @@ const scheduledJob = async (task) => {
       // finish task by occurrence
       if (task.end.by === "occurrence") {
         if (task.end.on === task.occurrence) {
-          updateTask(
+          await updateTask(
             {
               status: "finished",
             },
