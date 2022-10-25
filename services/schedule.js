@@ -34,6 +34,10 @@ const scheduledTime = (task) => {
   if (task.frequency === "once") {
     const date = new Date(task.next);
 
+    console.log("scheduled time");
+    console.log(date);
+    console.log(date.toString());
+
     rule.second = date.getSeconds();
     rule.minute = date.getMinutes();
     rule.hour = date.getHours();
