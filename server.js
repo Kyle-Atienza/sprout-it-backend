@@ -62,22 +62,4 @@ appServer.listen(port, () => {
   await scheduler.reSchedule();
 })();
 
-/* console.log(new Date().getTimezoneOffset());
-console.log(new Date().getDate()); */
-// console.log(DateTime.local().setZone("Asia/Manila").day);
-
-/* const date = new Date("2021-06-22T19:11:45.640-06:00");
-console.log({
-  day: date.getDay(),
-  month: date.getMonth(),
-  year: date.getFullYear(),
-});
-console.log(
-  DateTime.local().setZone("Asia/Manila").set({
-    day: date.getDay(),
-    month: date.getMonth(),
-    year: date.getFullYear(),
-  })
-); */
-
-console.log(new Date("2021-06-22T19:11:45.640-06:00"));
+console.log(new Date().toString());
