@@ -64,3 +64,11 @@ appServer.listen(port, () => {
 
 const date = new Date("2022-11-11");
 console.log("debug", new Date("10-26-2022 8:00").toString());
+console.log(
+  "debug",
+  new Date(
+    new Date("10-26-2022 8:00").toLocaleString("en-US", {
+      timeZone: "Asia/Manila",
+    })
+  ).toString()
+);
