@@ -70,5 +70,5 @@ console.log(
     new Date("10-26-2022 8:00").toLocaleString("en-US", {
       timeZone: "Asia/Manila",
     })
-  )
+  ).toString()
 );

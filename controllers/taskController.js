@@ -28,6 +28,17 @@ const setTask = asyncHandler(async (req, res) => {
         : null,
   });
 
+  console.log(
+    new Date(
+      new Date(`${req.body.start.on} ${req.body.time}`).toLocaleString(
+        "en-US",
+        {
+          timeZone: "Asia/Manila",
+        }
+      )
+    ).toString()
+  );
+
   if (task.start.by === "date") {
     scheduler.createSchedule(task);
   }
