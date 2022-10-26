@@ -65,7 +65,4 @@ appServer.listen(port, () => {
 /* console.log("current", new Date().toISOString());
 console.log("current", Date.now()); */
 
-console.log(
-  "debug",
-  new Date(new Date("2022-11-11").toUTCString()).toUTCString()
-);
+console.log("debug", new Date(new Date("2022-11-11").toUTCString()));
