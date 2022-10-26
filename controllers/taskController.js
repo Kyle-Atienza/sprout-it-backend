@@ -18,7 +18,12 @@ const setTask = asyncHandler(async (req, res) => {
     next:
       req.body.start.by === "date"
         ? new Date(
-            new Date(`${req.body.start.on} ${req.body.time}`).toUTCString()
+            new Date(`${req.body.start.on} ${req.body.time}`).toLocaleString(
+              "en-US",
+              {
+                timeZone: "Asia/Manila",
+              }
+            )
           )
         : null,
   });
