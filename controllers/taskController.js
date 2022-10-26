@@ -17,27 +17,11 @@ const setTask = asyncHandler(async (req, res) => {
     occurrence: 0,
     next:
       req.body.start.by === "date"
-        ? new Date(
-            new Date(`${req.body.start.on} ${req.body.time}`).toLocaleString(
-              "en-US",
-              {
-                timeZone: "Asia/Manila",
-              }
-            )
-          )
+        ? new Date(`${req.body.start.on} ${req.body.time} GMT+0800`)
         : null,
   });
 
-  console.log(
-    new Date(
-      new Date(`${req.body.start.on} ${req.body.time}`).toLocaleString(
-        "en-US",
-        {
-          timeZone: "Asia/Manila",
-        }
-      )
-    ).toString()
-  );
+  console.log(new Date(`${req.body.start.on} ${req.body.time} GMT+0800`));
 
   if (task.start.by === "date") {
     scheduler.createSchedule(task);
