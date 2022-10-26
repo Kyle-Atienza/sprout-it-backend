@@ -32,7 +32,7 @@ const scheduledTime = (task) => {
   rule.tz = "Asia/Manila";
 
   if (task.frequency === "once") {
-    const date = new Date(task.next);
+    /* const date = new Date(task.next);
 
     console.log("scheduled time");
     console.log(date);
@@ -40,7 +40,9 @@ const scheduledTime = (task) => {
 
     rule.second = date.getSeconds();
     rule.minute = date.getMinutes();
-    rule.hour = date.getHours();
+    rule.hour = date.getHours(); */
+
+    cron = new Date(task.next);
   } else if (task.frequency === "daily") {
     cron = `${minutes} ${hours} * * *`;
   } else if (task.frequency === "weekly") {
@@ -64,7 +66,7 @@ const scheduledTime = (task) => {
     };
   }
 
-  return rule;
+  return cron;
 };
 
 const updateTask = async (payload, task) => {

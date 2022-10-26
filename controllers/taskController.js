@@ -17,7 +17,9 @@ const setTask = asyncHandler(async (req, res) => {
     occurrence: 0,
     next:
       req.body.start.by === "date"
-        ? new Date(`${req.body.start.on} ${req.body.time}`)
+        ? new Date(
+            new Date(`${req.body.start.on} ${req.body.time}`).toUTCString()
+          )
         : null,
   });
 
