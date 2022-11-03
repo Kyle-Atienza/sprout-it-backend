@@ -1,6 +1,5 @@
 const _ = require("lodash");
 const schedule = require("node-schedule");
-const firebaseAdmin = require("../firebase");
 
 const Task = require("../models/taskModel");
 const Notification = require("../models/notificationModel");
