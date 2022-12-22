@@ -10,6 +10,10 @@ const harvestsSchema = mongoose.Schema(
       type: Number,
       required: [true, "Please add Weight"],
     },
+    harvestedAt: {
+      type: Date,
+      required: [true, "Please add Date"],
+    },
   },
   {
     timestamps: true,

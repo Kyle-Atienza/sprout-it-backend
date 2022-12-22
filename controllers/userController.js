@@ -18,6 +18,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   //check if user exists
   const userExists = await User.findOne({ email: email });
+  console.log(userExists);
   if (userExists) {
     res.status(400);
     throw new Error("User Already Exsists");
@@ -250,6 +251,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
       });
     }
   });
+
+  console.log("sent email");
 });
 
 const resetPassword = asyncHandler(async (req, res) => {

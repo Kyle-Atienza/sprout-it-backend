@@ -24,6 +24,7 @@ const getHarvests = asyncHandler(async (req, res) => {
 
 const setHarvest = asyncHandler(async (req, res) => {
   const { batchId } = req.params;
+  const { harvestedAt } = req.body;
 
   // get batch from body
   const batch = await Batch.findById(batchId).populate("harvests");
@@ -37,7 +38,7 @@ const setHarvest = asyncHandler(async (req, res) => {
 
   const duplicate = batch.harvests.some((harvest) => {
     return (
-      new Date(harvest.createdAt).toDateString() === new Date().toDateString()
+      new Date(harvest.harvestedAt).toDateString() === new Date(harvestedAt)
     );
   });
 
@@ -46,17 +47,22 @@ const setHarvest = asyncHandler(async (req, res) => {
     throw new Error("You cannot create more than one entry of harvest per day");
   }
 
-  // verify if creator owns the batch
-  /* if (batch.owner.toString() !== req.user.id) {
-    res.status(400);
-    throw new Error("Unable to modify batch");
-  } */
+  let harvest;
 
-  const harvest = await Harvest.create({
-    batch: batchId,
-    datetime: new Date(new Date().toDateString()),
-    weight: req.body.weight,
-  });
+  if (harvestedAt) {
+    harvest = await Harvest.create({
+      batch: batchId,
+      weight: req.body.weight,
+      harvestedAt: new Date(harvestedAt),
+    });
+  } else {
+    harvest = await Harvest.create({
+      batch: batchId,
+      weight: req.body.weight,
+      harvestedAt: new Date(),
+    });
+  }
+  console.log(harvest);
 
   await Batch.findByIdAndUpdate(
     batch.id,
