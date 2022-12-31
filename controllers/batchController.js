@@ -46,12 +46,13 @@ const setBatch = asyncHandler(async (req, res) => {
   });
 
   const isMaterialsSufficient = !materials.some((material) => {
-    return (
-      parseFloat(material.weight) >
-      batchMaterials.find((batchMaterial) => {
-        return material.material === batchMaterial._id.toString();
-      }).quantity
-    );
+    const batchMaterial = batchMaterials.find((batchMaterial) => {
+      return material.material === batchMaterial._id.toString();
+    });
+    console.log(batchMaterial);
+    return batchMaterial.name.toLowerCase() === "water"
+      ? false
+      : parseFloat(material.weight) > batchMaterial.quantity;
   });
 
   if (!isMaterialsSufficient) {
