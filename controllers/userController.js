@@ -209,7 +209,7 @@ const registerInvitedUser = asyncHandler(async (req, res) => {
 });
 
 const forgotPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const { email, origin } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -237,7 +237,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     from: "sproutitservice@gmail.com",
     to: user.email,
     subject: `SproutIt Password Reset for ${user.email}`,
-    text: `http://localhost:3000/reset-password/${token}`,
+    text: `${origin}/reset-password/${token}`,
   };
 
   mailTransporter.sendMail(details, (err) => {
@@ -246,7 +246,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
       throw new Error(err);
     } else {
       res.status(200).json({
-        "reset password link": `http://localhost:3000/reset-password/${token}`,
+        "reset password link": `${origin}/reset-password/${token}`,
       });
     }
   });
