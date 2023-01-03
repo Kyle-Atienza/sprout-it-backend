@@ -11,6 +11,14 @@ const getSuppliers = asyncHandler(async (req, res) => {
 const setSupplier = asyncHandler(async (req, res) => {
   const { name, address, contact } = req.body;
 
+  const suppliers = await Supplier.find();
+
+  const supplierExist = suppliers.find((supplier) => supplier.name === name);
+  if (supplierExist) {
+    res.status(400);
+    throw new Error("Supplier Already Exist");
+  }
+
   if (!name || !address || !contact) {
     res.status(400);
     throw new Error("Please provide necessary details");

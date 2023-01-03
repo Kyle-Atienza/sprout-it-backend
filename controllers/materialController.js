@@ -12,6 +12,17 @@ const getMaterials = asyncHandler(async (req, res) => {
 const postMaterial = asyncHandler(async (req, res) => {
   const { name, unit, price } = req.body;
 
+  const materials = await Material.find();
+
+  const materialExist = materials.find((material) => material.name === name);
+
+  if (materialExist) {
+    res.status(400);
+    throw new Error(
+      "Material Already Exist. Please add Quantity on Financials"
+    );
+  }
+
   if (!name || !unit) {
     res.status(400);
     throw new Error("Please provide necessary details");
