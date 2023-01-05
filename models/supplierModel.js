@@ -18,6 +18,15 @@ const supplierSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    products: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Material",
+        },
+        price: Number,
+      },
+    ],
   },
   {
     timestamps: true,

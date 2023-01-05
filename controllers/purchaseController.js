@@ -27,14 +27,14 @@ const setPurchase = asyncHandler(async (req, res) => {
     throw new Error("Material does not exist");
   }
 
-  await Material.findByIdAndUpdate(
+  /* await Material.findByIdAndUpdate(
     materialId,
     {
       quantity: material.quantity + parseFloat(quantity),
       price: price,
     },
     { new: true }
-  );
+  ); */
 
   const purchase = await Purchase.create({
     material: materialId,
@@ -43,6 +43,30 @@ const setPurchase = asyncHandler(async (req, res) => {
     supplier: supplierId,
   });
   res.status(200).json(purchase);
+
+  if (quantity) {
+    const purchases = await Purchase.find({
+      material: {
+        _id: material._id,
+      },
+    });
+
+    const materialQuantity = purchases.reduce((prev, current) => {
+      console.log(current);
+      return prev + current.quantity;
+    }, 0);
+
+    console.log(purchases, materialQuantity);
+
+    await Material.findByIdAndUpdate(
+      materialId,
+      {
+        quantity: materialQuantity,
+        price: price,
+      },
+      { new: true }
+    );
+  }
 });
 
 const updatePurchase = asyncHandler(async (req, res) => {
@@ -86,37 +110,76 @@ const updatePurchase = asyncHandler(async (req, res) => {
 });
 
 const deletePurchase = asyncHandler(async (req, res) => {
-  const purchase = await Purchase.findById(req.params.id);
+  if (req.params.id === "all") {
+    const purchases = await Purchase.find();
 
-  if (!purchase) {
-    res.status(400);
-    throw new Error("material not found");
+    purchases.forEach(async (purchase) => {
+      await purchase.remove();
+    });
+
+    res.status(200).json({
+      message: "All Purchases Removed",
+    });
+  } else {
+    const purchase = await Purchase.findById(req.params.id);
+
+    if (!purchase) {
+      res.status(400);
+      throw new Error("material not found");
+    }
+
+    await purchase.remove();
+
+    const purchases = await Purchase.find({
+      material: {
+        _id: purchase.material._id,
+      },
+    });
+
+    const materialQuantity = purchases.reduce((prev, current) => {
+      console.log(current);
+      return prev + current.quantity;
+    }, 0);
+
+    await Material.findByIdAndUpdate(
+      purchase.material._id,
+      {
+        quantity: materialQuantity,
+      },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Deleted Purchase " + req.params.id,
+    });
   }
+});
 
-  await purchase.remove();
-
+const deletePurchasByMaterial = asyncHandler(async (req, res) => {
   const purchases = await Purchase.find({
     material: {
-      _id: purchase.material._id,
+      _id: req.params.id,
     },
   });
+  console.log(req.params.id);
 
-  const materialQuantity = purchases.reduce((prev, current) => {
-    console.log(current);
-    return prev + current.quantity;
-  }, 0);
-
-  await Material.findByIdAndUpdate(
-    purchase.material._id,
-    {
-      quantity: materialQuantity,
-    },
-    { new: true }
-  );
+  purchases.forEach(async (purchase) => {
+    await purchase.remove();
+  });
 
   res.status(200).json({
-    message: "Deleted Purchase " + req.params.id,
+    material: req.params.id,
   });
+});
+
+const deleteAll = asyncHandler(async (req, res) => {
+  const purchases = await Purchase.find();
+
+  /* purchases.forEach(async (purchase) => {
+    await purchase.remove();
+  }); */
+
+  res.status(200).json(purchases);
 });
 
 module.exports = {
@@ -124,4 +187,6 @@ module.exports = {
   setPurchase,
   updatePurchase,
   deletePurchase,
+  deletePurchasByMaterial,
+  deleteAll,
 };

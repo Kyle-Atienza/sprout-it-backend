@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const Supplier = require("../models/supplierModel");
 
 const getSuppliers = asyncHandler(async (req, res) => {
-  const suppliers = await Supplier.find();
+  const suppliers = await Supplier.find().populate("products.product");
 
   res.status(200).json(suppliers);
 });
@@ -46,7 +46,7 @@ const updateSupplier = asyncHandler(async (req, res) => {
     {
       new: true,
     }
-  );
+  ).populate("products.product");
 
   res.status(200).json(updatedSupplier);
 });
