@@ -4,6 +4,8 @@ const cors = require("cors");
 const scheduler = require("./services/schedule");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const _ = require("lodash");
+const schedule = require("node-schedule");
 
 const { errorHandler } = require("./middleware/errorMiddleware");
 
@@ -61,16 +63,3 @@ appServer.listen(port, () => {
 (async () => {
   await scheduler.reSchedule();
 })();
-
-/* const date = new Date("2022-11-11");
-console.log("debug", new Date("10-26-2022 8:00").toString());
-console.log("debug", new Date("10-26-2022 8:00 GMT+0800").toString());
-console.log(
-  "debug",
-  new Date(
-    new Date("10-26-2022 8:00").toLocaleString("en-US", {
-      timeZone: "Asia/Manila",
-    })
-  ).toString()
-);
- */

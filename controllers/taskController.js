@@ -65,9 +65,22 @@ const deleteTask = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteAll = asyncHandler(async (req, res) => {
+  const tasks = await Task.find();
+
+  tasks.forEach(async (task) => {
+    await task.remove();
+  });
+
+  res.status(200).json({
+    message: "All tasks deleted",
+  });
+});
+
 module.exports = {
   getTasks,
   setTask,
   updateTask,
   deleteTask,
+  deleteAll,
 };

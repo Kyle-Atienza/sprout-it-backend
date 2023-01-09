@@ -8,10 +8,12 @@ const {
   setHarvest,
   updateHarvest,
   deleteHarvest,
+  setHarvestForMultipleBatch,
 } = require("../controllers/harvestController");
 
 router.get("/:batchId", protect, getHarvests);
 router.post("/:batchId", protect, setHarvest);
+router.post("/temp/many", protect, setHarvestForMultipleBatch);
 router.put("/:harvestId", protect, updateHarvest);
 router.delete("/:harvestId", protect, deleteHarvest);
 

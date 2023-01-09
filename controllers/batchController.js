@@ -57,7 +57,7 @@ const setBatch = asyncHandler(async (req, res) => {
 
   if (!isMaterialsSufficient) {
     res.status(400);
-    throw new Error("Insuficcient Materials");
+    throw new Error("Insufficient Materials");
   }
 
   batchMaterials.forEach(async (batchMaterial) => {

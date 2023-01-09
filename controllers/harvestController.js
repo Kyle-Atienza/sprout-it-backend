@@ -62,7 +62,6 @@ const setHarvest = asyncHandler(async (req, res) => {
       harvestedAt: new Date(),
     });
   }
-  console.log(harvest);
 
   await Batch.findByIdAndUpdate(
     batch.id,
@@ -73,6 +72,66 @@ const setHarvest = asyncHandler(async (req, res) => {
   );
 
   res.status(200).json(harvest);
+});
+
+const setHarvestForMultipleBatch = asyncHandler(async (req, res) => {
+  const { batchIds } = req.body;
+  const { harvestedAt } = req.body;
+
+  const response = [];
+
+  batchIds.forEach(async (id) => {
+    const batch = await Batch.findById(id).populate("harvests");
+
+    // check if batch is returned
+    if (!batch) {
+      res.status(400);
+      throw new Error("Batch not found");
+    }
+
+    // const harvests = await Harvest.find();
+
+    const duplicate = batch.harvests.some((harvest) => {
+      return (
+        new Date(harvest.harvestedAt).toDateString() === new Date(harvestedAt)
+      );
+    });
+
+    if (duplicate) {
+      res.status(400);
+      throw new Error(
+        "You cannot create more than one entry of harvest per day"
+      );
+    }
+
+    let harvest;
+
+    if (harvestedAt) {
+      harvest = await Harvest.create({
+        batch: id,
+        weight: req.body.weight,
+        harvestedAt: new Date(harvestedAt),
+      });
+    } else {
+      harvest = await Harvest.create({
+        batch: id,
+        weight: req.body.weight,
+        harvestedAt: new Date(),
+      });
+    }
+    response.push(harvest);
+
+    await Batch.findByIdAndUpdate(
+      batch.id,
+      {
+        harvests: [...batch.harvests, harvest.id],
+      },
+      { new: true }
+    );
+  });
+
+  res.status(200).json(response);
+  response = [];
 });
 
 const updateHarvest = asyncHandler(async (req, res) => {
@@ -107,4 +166,5 @@ module.exports = {
   setHarvest,
   updateHarvest,
   deleteHarvest,
+  setHarvestForMultipleBatch,
 };
