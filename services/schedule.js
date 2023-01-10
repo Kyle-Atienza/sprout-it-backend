@@ -132,6 +132,7 @@ const scheduledJob = async (task) => {
 };
 
 const createSchedule = async (task) => {
+  console.log(task);
   try {
     setTimeout_(async () => {
       await scheduledJob(task);

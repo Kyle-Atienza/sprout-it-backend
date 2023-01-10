@@ -48,10 +48,10 @@ app.use("/api/notif", require("./routes/notificationRoutes"));
 app.use(errorHandler);
 
 io.on("connection", (socket) => {
-  console.log("connected");
+  // console.log("connected");
 
   socket.on("disconnect", () => {
-    console.log("disconnected");
+    // console.log("disconnected");
   });
 });
 

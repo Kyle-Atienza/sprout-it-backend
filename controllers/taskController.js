@@ -15,17 +15,10 @@ const setTask = asyncHandler(async (req, res) => {
   const task = await Task.create({
     ...req.body,
     occurrence: 0,
-    next:
-      req.body.start.by === "date"
-        ? new Date(`${req.body.start.on} ${req.body.time} GMT+0800`)
-        : null,
+    next: new Date(`${req.body.start.on} ${req.body.time} GMT+0800`),
   });
 
-  console.log(new Date(`${req.body.start.on} ${req.body.time} GMT+0800`));
-
-  if (task.start.by === "date") {
-    scheduler.createSchedule(task);
-  }
+  scheduler.createSchedule(task);
 
   res.status(200).json(task);
 });
