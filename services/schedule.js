@@ -31,16 +31,6 @@ const scheduledTime = (task) => {
   rule.tz = "Asia/Manila";
 
   if (task.frequency === "once") {
-    /* const date = new Date(task.next);
-
-    console.log("scheduled time");
-    console.log(date);
-    console.log(date.toString());
-
-    rule.second = date.getSeconds();
-    rule.minute = date.getMinutes();
-    rule.hour = date.getHours(); */
-
     cron = new Date(task.next);
   } else if (task.frequency === "daily") {
     cron = `${minutes} ${hours} * * *`;
@@ -76,12 +66,9 @@ const updateTask = async (payload, task) => {
       new: true,
     }
   );
-  console.log("updated task", updatedTask);
 };
 
 const scheduledJob = async (task) => {
-  console.log(scheduledTime(task));
-
   const job = schedule.scheduleJob(
     task._id.toString(),
     scheduledTime(task),
@@ -111,7 +98,6 @@ const scheduledJob = async (task) => {
           task
         );
         schedule.cancelJob(task._id.toString());
-        console.log("task finished");
       }
 
       // finish task by occurrence
@@ -124,7 +110,6 @@ const scheduledJob = async (task) => {
             task
           );
           schedule.cancelJob(task._id.toString());
-          console.log("task finished");
         }
       }
     }
@@ -132,7 +117,6 @@ const scheduledJob = async (task) => {
 };
 
 const createSchedule = async (task) => {
-  console.log(task);
   try {
     setTimeout_(async () => {
       await scheduledJob(task);

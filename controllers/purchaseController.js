@@ -52,11 +52,8 @@ const setPurchase = asyncHandler(async (req, res) => {
     });
 
     const materialQuantity = purchases.reduce((prev, current) => {
-      console.log(current);
       return prev + current.quantity;
     }, 0);
-
-    console.log(purchases, materialQuantity);
 
     await Material.findByIdAndUpdate(
       materialId,
@@ -93,7 +90,6 @@ const updatePurchase = asyncHandler(async (req, res) => {
     });
 
     const materialQuantity = purchases.reduce((prev, current) => {
-      console.log(current);
       return prev + current.quantity;
     }, 0);
 
@@ -137,7 +133,6 @@ const deletePurchase = asyncHandler(async (req, res) => {
     });
 
     const materialQuantity = purchases.reduce((prev, current) => {
-      console.log(current);
       return prev + current.quantity;
     }, 0);
 
@@ -161,7 +156,6 @@ const deletePurchasByMaterial = asyncHandler(async (req, res) => {
       _id: req.params.id,
     },
   });
-  console.log(req.params.id);
 
   purchases.forEach(async (purchase) => {
     await purchase.remove();

@@ -37,8 +37,6 @@ const postMaterial = asyncHandler(async (req, res) => {
 });
 
 const putMaterial = asyncHandler(async (req, res) => {
-  console.log(req.body);
-
   const updatedMaterial = await Material.findByIdAndUpdate(
     req.params.id,
     req.body,

@@ -9,7 +9,7 @@ const getSuppliers = asyncHandler(async (req, res) => {
 });
 
 const setSupplier = asyncHandler(async (req, res) => {
-  const { name, address, contact } = req.body;
+  const { name, address, contact, products } = req.body;
 
   const suppliers = await Supplier.find();
 
@@ -25,9 +25,10 @@ const setSupplier = asyncHandler(async (req, res) => {
   }
 
   const supplier = await Supplier.create({
-    name: name,
-    address: address,
-    contact: contact,
+    name,
+    address,
+    contact,
+    products,
   });
   res.status(200).json(supplier);
 });

@@ -49,7 +49,6 @@ const setBatch = asyncHandler(async (req, res) => {
     const batchMaterial = batchMaterials.find((batchMaterial) => {
       return material.material === batchMaterial._id.toString();
     });
-    console.log(batchMaterial);
     return batchMaterial.name.toLowerCase() === "water"
       ? false
       : parseFloat(material.weight) > batchMaterial.quantity;

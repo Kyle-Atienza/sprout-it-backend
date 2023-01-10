@@ -99,8 +99,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   if (password) {
-    console.log(password);
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -250,8 +248,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
       });
     }
   });
-
-  console.log("sent email");
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
