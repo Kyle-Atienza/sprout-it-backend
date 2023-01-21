@@ -14,7 +14,9 @@ const postMaterial = asyncHandler(async (req, res) => {
 
   const materials = await Material.find();
 
-  const materialExist = materials.find((material) => material.name === name);
+  const materialExist = materials.find(
+    (material) => material.name === name && !material.isDeleted
+  );
 
   if (materialExist) {
     res.status(400);
