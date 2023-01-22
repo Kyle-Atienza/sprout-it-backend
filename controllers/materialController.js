@@ -39,6 +39,13 @@ const postMaterial = asyncHandler(async (req, res) => {
 });
 
 const putMaterial = asyncHandler(async (req, res) => {
+  const material = await Material.findById(req.params.id);
+
+  if (material.name === req.body.name) {
+    res.status(400);
+    throw new Error("Material Already Exist");
+  }
+
   const updatedMaterial = await Material.findByIdAndUpdate(
     req.params.id,
     req.body,
