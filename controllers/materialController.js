@@ -69,7 +69,7 @@ const deleteMaterial = asyncHandler(async (req, res) => {
   );
 
   res.status(200).json({
-    message: "Deleted Material " + req.params.id,
+    id: req.params.id,
   });
 });
 

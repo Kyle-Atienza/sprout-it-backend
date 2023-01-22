@@ -13,7 +13,9 @@ const setSupplier = asyncHandler(async (req, res) => {
 
   const suppliers = await Supplier.find();
 
-  const supplierExist = suppliers.find((supplier) => supplier.name === name);
+  const supplierExist = suppliers.find(
+    (supplier) => supplier.name === name && !supplier.isDeleted
+  );
   if (supplierExist) {
     res.status(400);
     throw new Error("Supplier Already Exist");
